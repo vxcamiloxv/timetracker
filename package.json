@@ -1,0 +1,88 @@
+{
+  "name": "timetracker",
+  "version": "0.1.0",
+  "description": "TimkeTracker test Projects",
+  "main": "app/app.js",
+  "scripts": {
+    "serve": "node ./bin/app",
+    "lint": "eslint bin/ app/routes/ app/modules/ app/controllers/ app/helpers app/views/src",
+    "test": "npm run lint && mocha --check-leaks -t 10000 -b test/index.js",
+    "cover": "npm run lint && istanbul cover _mocha -- --check-leaks -t 10000 -b -R spec test/index.js",
+    "build_fonts": "mkdir -p public/static/fonts && cp node_modules/bootstrap/fonts/* public/static/fonts/",
+    "build_less": "lessc app/views/src/less/main.less public/static/css/main.min.css",
+    "build_statics": "npm run build_fonts && npm run build_less",
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules --config build/webpack.config.js && npm run build_statics",
+    "devel": "cross-env NODE_ENV=development webpack --progress --hide-modules --config build/webpack.config.js"
+  },
+  "bin": {
+    "app": "./bin/app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:vxcamiloxv/timetracker.git"
+  },
+  "keywords": [
+    "timetracker"
+  ],
+  "author": "Camilo Quimbayo",
+  "license": "GPL3",
+  "bugs": {
+    "url": "https://github.com/vxcamiloxv/timetracker/issues"
+  },
+  "homepage": "https://github.com/vxcamiloxv/timetracker#README.md",
+  "dependencies": {
+    "body-parser": "^1.16.1",
+    "boom": "^4.2.0",
+    "bootstrap": "^3.3.7",
+    "bunyan": "^1.8.5",
+    "caminte": "^0.3.6",
+    "compression": "^1.6.2",
+    "express": "^4.14.0",
+    "express-session": "^1.15.1",
+    "express-sessions": "^1.0.6",
+    "express-useragent": "^1.0.7",
+    "file-stream-rotator": "0.0.7",
+    "helmet": "^3.4.0",
+    "lodash": "^4.17.4",
+    "mkdirp": "^0.5.1",
+    "moment": "^2.17.1",
+    "morgan": "^1.7.0",
+    "node-uuid": "^1.4.7",
+    "nunjucks": "^3.0.0",
+    "passport": "^0.3.2",
+    "passport-twitter": "^1.0.4",
+    "q": "^1.4.1",
+    "redis": "^2.6.5",
+    "serve-favicon": "^2.4.0",
+    "socket.io": "^1.5.0",
+    "sqlite3": "^3.1.8",
+    "vue": "^2.2.1",
+    "vue-loader": "^11.1.3",
+    "vue-resource": "^1.2.0",
+    "vue-template-compiler": "^2.2.1",
+    "vue2-timepicker": "^0.1.4"
+  },
+  "devDependencies": {
+    "babel-core": "^6.0.0",
+    "babel-loader": "^6.0.0",
+    "babel-plugin-transform-runtime": "^6.0.0",
+    "babel-preset-es2015": "^6.0.0",
+    "babel-preset-stage-2": "^6.0.0",
+    "chai": "^3.5.0",
+    "cross-env": "^3.0.0",
+    "css-loader": "^0.25.0",
+    "dirty-chai": "^1.2.2",
+    "eslint": "^2.13.1",
+    "eslint-config-standard": "^5.1.0",
+    "eslint-friendly-formatter": "^2.0.7",
+    "eslint-plugin-promise": "^3.4.2",
+    "eslint-plugin-standard": "^2.0.1",
+    "file-loader": "^0.9.0",
+    "less": "^2.7.2",
+    "mocha": "^3.2.0",
+    "sinon": "^1.17.7",
+    "sinon-chai": "^2.8.0",
+    "supertest": "^3.0.0",
+    "webpack": "^2.2.0"
+  }
+}

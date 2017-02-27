@@ -1,0 +1,59 @@
+#!/usr/bin/env node
+//
+// run CPS Server
+//
+// 2015, CPS - Cellular Parking Systems
+
+(function () {
+    "use strict";
+
+    var ld = require("lodash");
+    var config = require("../config");
+    var defaults = require("../app/helpers/defaults");
+    var helpers = require("../app/helpers");
+    var app = require("../app/app");
+
+    var logger = helpers.logger;
+    var create = app.createServer;
+
+  // First get config files, then launch app
+    function run () {
+        var configData = ld.clone(config);
+        var log;
+
+    // Extend default config from config file
+        configData = ld.defaults(configData, defaults);
+
+    // Envioroment
+        process.env.NODE_ENV = configData.enviroment || "development";
+
+    // Databases
+        configData.database = configData.database &&
+      configData.database[configData.enviroment] || configData.database || {};
+
+    // Set User
+        if(configData.serverUser) {
+            process.setuid(config.serverUser);
+        }
+        if(configData.serverGroup) {
+            process.setgid(config.serverGroup);
+        }
+        log = logger.init(configData);
+
+    // Create server
+        create(configData).then(function (server) {
+      // Send a message from the master process to the worker.
+            log.debug("Finished setting up server");
+            log.info("Listening on %s for host %s", server.app.address.port, server.app.address.host);
+
+        }).catch(function (err) {
+            log.error(err);
+            console.error(err);
+            process.exit(1);
+        });
+    }
+
+  // Init!!
+    run();
+
+})();

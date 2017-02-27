@@ -1,0 +1,126 @@
+<!-- -*- engine: nunjucks -*- -->
+
+{% extends "layout.html" %}
+
+{% block title %}
+    {{= page.title =}}
+{% endblock %}
+
+{% block body %}
+    <p class="bg-warning" v-if="error.message">
+        {{ error.message }}
+    </p>
+    <div v-if="user.isAuthenticated">
+
+        <div class="col-sm-3">
+            <div class="user-details">
+                <p class="text-center">
+                    <img :src="user.avatar" class="avatar img-circle img-responsive center-block" />
+                    <strong>
+                        Welcome: {{ user.name }}
+                    </strong>
+                </p>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="text-center">Total Time</h2>
+                </div>
+
+                <div class="panel-body">
+                    <h2 class="text-center">{{ total | duration }}</h2>
+                </div>
+
+            </div>
+        </div>
+        <div v-if="!taskActive.active" class="col-sm-9">
+            <div class="padding text-center">
+                <button class="btn btn-primary" v-on:click="quickTask">Quick Task</button>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>New Task</h3>
+                </div>
+                <div class="panel-body">
+                    <div>
+                        <input type="text" class="form-control" placeholder="Name" v-model="task.name">
+                        <vue-timepicker v-model="time" format="HH:mm:ss"></vue-timepicker>
+                        <button class="btn btn-primary" v-on:click="addTask">Add task</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div v-else class="col-sm-9">
+            <div class="list-group">
+
+                <div class="list-group-item">
+                    <div class="text-center time-block">
+                        <h3 class="list-group-item-text total-time">
+                            <i class="glyphicon glyphicon-time"></i>
+                            {{ taskActive.name }}
+                        </h3>
+                        <div>
+                            <p class="label label-primary text-center">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                                Current time: {{ duration | duration("HH:mm:ss") }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="label label-primary text-center" v-if="taskActive.end_at != taskActive.pause_at">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                                End at: {{ taskActive.end_at | moment }}
+                            </p>
+                        </div>
+                        <div class="padding">
+                            <button
+                                class="btn btn-sm btn-block btn-danger delete-button"
+                                @click="stopTask(taskActive.id)">
+                                Stop
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-sm-9">
+            <div class="list-group">
+                <a href="#" class="list-group-item tasks-block" v-for="task in tasks">
+                    <div class="row">
+                        <div class="col-sm-9 time-block">
+                            <h3 class="title">
+                                {{ task.name }}
+                            </h3>
+                            <p class="list-group-item-text total-time">
+                                <i class="glyphicon glyphicon-time"></i>
+                                {{ task.duration | duration("HH:mm:ss") }}
+                            </p>
+                            <p class="label label-primary">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                                Start: {{ task.start_at | moment }}
+                            </p>
+                            <p class="label label-primary">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                                End: {{ task.end_at | moment }}
+                            </p>
+                        </div>
+
+                        <div class="col-sm-2 action-block">
+                            <button class="btn btn-xs btn-danger" v-on:click="continueTask(task.id)">Continue</button>
+                        </div>
+
+                    </div>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <div v-else class="col-md-4 text-center">
+        <h3>
+            Welcome to my timeTracker, please login to continue
+        </h3>
+        <a href="/auth/twitter" class="btn btn-primary btn-lg">Login with Twitter</a>
+    </div>
+{% endblock %}
